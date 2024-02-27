@@ -4,11 +4,9 @@
 <div class="container">
     <h1 class="mb-4">商品新規登録画面</h1>
 
-
     <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
 
         @csrf
-
 
      <div class="card">
         <div class="mb-2">
@@ -50,7 +48,6 @@
         <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg">戻る</a>
 
     </form>
-
 
 </div>
 @endsection

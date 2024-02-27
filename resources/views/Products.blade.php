@@ -1,10 +1,5 @@
 @extends('layouts.app')
 
-<!-- 修正：stylesという名前のセクションをpushする -->
-
-<link rel="stylesheet" href="{{ asset('css/products.scss') }}">
-
-    
 @section('content')
 
 @if (session('success'))

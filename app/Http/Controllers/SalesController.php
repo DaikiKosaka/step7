@@ -15,13 +15,11 @@ class SalesController extends Controller
     public function index()
     {
         try {
-            // Sales モデルを使用してすべての売上データを取得
             $sales = Sales::all();
 
-            // 取得したデータを 'sales' ビューに渡して表示
             return view('sales.index', ['sales' => $sales]);
         } catch (\Exception $e) {
-            // エラーハンドリング: データ取得に失敗した場合はエラーメッセージを表示
+
             return back()->withError('Failed to fetch sales data.')->withInput();
         }
     }

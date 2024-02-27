@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
        <div class="card"style="bs-btn-padding-y: 25rem; --bs-btn-font-size: .75rem;">
-       <div class="card-header"><h2>商品情報詳細</h2></div>
+       <div class="card-header"><h2>商品情報詳細画面</h2></div>
 
     
         <h2>ID</h2>
