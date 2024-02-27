@@ -1,36 +1,95 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace App\Http\Controllers;
 
-return new class extends Migration
+use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\Company;
+
+class ProductsController extends Controller
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    
+
+    public function index()
     {
-        Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->string('product_name');
-            $table->decimal('price', 8, 2);
-            $table->integer('stock');
-            $table->text('comment')->nullable();
-            $table->string('img_path')->nullable();
-            $table->timestamps();
-        });
+        $products = Product::all();
+        return view('products.index', compact('products'));
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function create()
     {
-        Schema::dropIfExists('products');
+        $companies = Company::all();
+        return view('products.create', compact('companies'));
     }
-};
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'product_name' => 'required',
+            'company_id' => 'required',
+            'price' => 'required',
+            'stock' => 'required',
+            'comment' => 'nullable',
+            'img_path' => 'nullable|image|max:2048',
+        ]);
+
+        $product = new Product([
+            'product_name' => $request->get('product_name'),
+            'company_id' => $request->get('company_id'),
+            'price' => $request->get('price'),
+            'stock' => $request->get('stock'),
+            'comment' => $request->get('comment'),
+        ]);
+
+        if($request->hasFile('img_path')){
+            $filename = $request->img_path->getClientOriginalName();
+            $filePath = $request->img_path->storeAs('products', $filename, 'public');
+            $product->img_path = '/storage/' . $filePath;
+        }
+
+        $product->save();
+
+        return redirect()->route('products.index')
+            ->with('success', 'Product created successfully');
+    }
+
+    public function show(Product $product)
+    {
+        return view('products.show', ['product' => $product]);
+    }
+
+    public function edit(Product $product)
+    {
+        $companies = Company::all();
+        return view('products.edit', compact('product', 'companies'));
+    }
+
+    public function update(Request $request, Product $product)
+    {
+        $request->validate([
+            'product_name' => 'required',
+            'price' => 'required',
+            'stock' => 'required',
+        ]);
+
+        $product->product_name = $request->product_name;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+
+        $product->save();
+
+        return redirect()->route('products.index')
+            ->with('success', 'Product updated successfully');
+    }
+
+    public function destroy(Product $product)
+    {
+        $product->delete();
+
+        return redirect()->route('products.index')
+            ->with('success', 'Product deleted successfully');
+    }
+}
+
+
+?>

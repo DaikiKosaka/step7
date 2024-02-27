@@ -15,7 +15,7 @@
                     @endif
 
                     {{ __('You are logged in!') }}
-                    <a href="{{route('products')}}">製品一覧へ</a>
+                    <a href="/step7/public/products">製品一覧へ</a>
                 </div>
             </div>
         </div>

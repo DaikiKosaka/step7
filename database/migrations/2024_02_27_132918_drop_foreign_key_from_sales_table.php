@@ -13,12 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sales', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('product_id');
-            $table->timestamps();
-
-            $table->foreign('product_id')->references('id')->on('products');
+        Schema::table('sales', function (Blueprint $table) {
+            $table->dropForeign(['product_id']);
+        
         });
     }
 
@@ -29,6 +26,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sales');
+        Schema::table('sales', function (Blueprint $table) {
+            $table->foreign('product_id')->references('id')->on('products');
+        
+        });
     }
 };

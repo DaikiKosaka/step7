@@ -4,11 +4,10 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <a href="{{ route('products.index') }}" class="btn btn-primary mt-1 mb-3">商品一覧画面に戻る</a>
                 <div class="card">
-                    <div class="card-header"><h2>商品情報を変更する</h2></div>
+                    <div class="card-header"><h2>商品情報編集画面</h2></div>
 
-                    <div class="card-body">
+                    <div class="row">
                         <form method="POST" action="{{ route('products.update', $product) }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -48,7 +47,9 @@
                                 <img src="{{ asset($product->img_path) }}" alt="商品画像" class="product-image">
                             </div>
 
-                            <button type="submit" class="btn btn-primary">変更内容で更新する</button>
+                            <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg">戻る</a>
+
+                            <button type="submit" class="btn btn-warning btn btn-warning btn-lg">変更内容で更新する</button>
                         </form>
                     </div>
                 </div>
