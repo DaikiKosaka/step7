@@ -30,6 +30,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('companies');
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn('company_id');
+        });
     }
 };
