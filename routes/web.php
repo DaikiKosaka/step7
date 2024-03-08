@@ -20,13 +20,13 @@ Route::get('/search', 'ProductController@search')->name('search');
 
 Route::get('/companies', 'ProductController@create')->name('companies');
 
-Route::post('/list', 'ProductController@store')->name('store');
+Route::post('/products', 'ProductController@store')->name('store');
 
-Route::get('/list/{product}', 'ProductController@show')->name('show');
+Route::get('/show/{product}', 'ProductController@show')->name('show');
 
 Route::get('/edit/{product}', 'ProductController@edit')->name('edit');
 
-Route::put('/list/{product}', 'ProductController@update')->name('update');
+Route::put('/products/{product}', 'ProductController@update')->name('update');
 
 Route::post('/delete', 'ProductController@destroy')->name('destroy');
 
