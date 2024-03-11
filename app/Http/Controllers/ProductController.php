@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product; 
 use App\Models\Company;
 use Illuminate\Http\Request; 
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -46,30 +47,40 @@ class ProductController extends Controller
     public function store(Request $request)
 {
     try {
-        $request->validate([
-            'product_name' => 'required',
-            'company_id' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-            'comment' => 'nullable',
-            'img_path' => 'nullable|image|max:2048',
-        ]);
+        DB::transaction(function () use ($request) {
+            $request->validate([
+                'product_name' => 'required',
+                'company_name' => 'required', // メーカー名のバリデーションを追加
+                'price' => 'required',
+                'stock' => 'required',
+                'comment' => 'nullable',
+                'img_path' => 'nullable|image|max:2048',
+            ]);
 
-        $product = new Product([
-            'product_name' => $request->get('product_name'),
-            'company_id' => $request->get('company_id'),
-            'price' => $request->get('price'),
-            'stock' => $request->get('stock'),
-            'comment' => $request->get('comment'),
-        ]);
+            // メーカー名からメーカーを検索
+            $company = Company::where('company_name', $request->get('company_name'))->first();
+            if (!$company) {
+                // メーカーが存在しない場合は例外を投げる
+                throw new \Exception('メーカーが見つかりません');
+            }
 
-        if($request->hasFile('img_path')){   
-            $filename = $request->img_path->getClientOriginalName();
-            $filePath = $request->img_path->storeAs('public/products', $filename);
-            $product->img_path = 'storage/products/' . $filename;
-        }
+            $product = new Product([
+                'product_name' => $request->get('product_name'),
+                'company_id' => $company->id, // メーカーIDを設定
+                'price' => $request->get('price'),
+                'stock' => $request->get('stock'),
+                'comment' => $request->get('comment'),
+            ]);
 
-        $product->save();
+            // 既存の画像アップロードのコード
+            if($request->hasFile('img_path')){   
+                $filename = $request->img_path->getClientOriginalName();
+                $filePath = $request->img_path->storeAs('public/products', $filename);
+                $product->img_path = 'storage/products/' . $filename;
+            }
+
+            $product->save();
+        });
 
         return redirect()->route('products.index')
             ->with('success', '登録しました');
@@ -94,6 +105,7 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
 {
     try {
+        DB::transaction(function () use ($request, $product){
         $request->validate([
             'product_name' => 'required',
             'price' => 'required',
@@ -105,7 +117,7 @@ class ProductController extends Controller
         $product->stock = $request->stock;
 
         $product->save();
-
+    });
         return redirect()->route('products.index')
             ->with('success', '更新しました');
     } catch (\Exception $e) {
@@ -114,17 +126,18 @@ class ProductController extends Controller
     }
 }
     public function destroy(Product $product)
-{
-        try {
-           $product->delete();
+    {
+    try {
+        DB::transaction(function () use ($product) {
+            $product->delete();
+        });
 
         return redirect()->route('products.index')
-            ->with('success', '削除しました');}
-        catch (\Exception $e) {
+            ->with('success', '削除しました');
+    } catch (\Exception $e) {
         // エラー時の処理
         return redirect()->back()->with('error', 'エラーです' . $e->getMessage());
     }
-}
-    
+    }
 }
 

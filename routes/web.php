@@ -14,12 +14,13 @@ Route::get('/', function () {
 });
 
 // 商品一覧ページのルート
-Route::get('/products', 'ProductController@index')->name('products');
+Route::get('/products', 'ProductController@index')->name('products.index');
 
 Route::get('/search', 'ProductController@search')->name('search');
 
-Route::get('/companies', 'ProductController@create')->name('companies');
+Route::get('/create', 'ProductController@create')->name('create');
 
+// 新規登録のためのルートを削除
 Route::post('/products', 'ProductController@store')->name('store');
 
 Route::get('/show/{product}', 'ProductController@show')->name('show');
@@ -28,7 +29,7 @@ Route::get('/edit/{product}', 'ProductController@edit')->name('edit');
 
 Route::put('/products/{product}', 'ProductController@update')->name('update');
 
-Route::post('/delete', 'ProductController@destroy')->name('destroy');
+Route::delete('/products/{product}', 'ProductController@destroy')->name('destroy');
 
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -38,8 +39,8 @@ Route::get('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
+// 認証が必要なルートをグループ化
 Route::group(['middleware' => 'auth'], function () {
+    // 商品に関するCRUDルートを自動的に生成
     Route::resource('products', ProductController::class);
 });
-
-Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
