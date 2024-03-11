@@ -142,19 +142,26 @@ class ProductController extends Controller
         return redirect()->back()->with('error', 'エラーです' . $e->getMessage());
     }
 }
-    public function destroy(Product $product)
-    {
+public function destroy(Product $product)
+{
     try {
-        DB::transaction(function () use ($product) {
-            $product->delete();
-        });
+        // トランザクションの開始
+        DB::beginTransaction();
+
+        // 製品の削除
+        $product->delete();
+
+        // トランザクションのコミット
+        DB::commit();
 
         return redirect()->route('products.index')
             ->with('success', '削除しました');
     } catch (\Exception $e) {
         // エラー時の処理
+        // トランザクションのロールバック
+        DB::rollback();
         return redirect()->back()->with('error', 'エラーです' . $e->getMessage());
     }
-    }
+}
 }
 
