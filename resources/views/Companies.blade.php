@@ -20,12 +20,10 @@
 
         <div class="mb-3">
             <label for="company_id" class="form-label">メーカー</label>
-            <select class="form-select" id="company_id" name="company_id">
+            <select class="form-select" id="company_id" name="company_name">
                 @foreach($companies as $company)
                     <option value="{{ $company->id }}">{{ $company->company_name }}</option>
                 @endforeach
-                <option value="">コカ・コーラ</option>
-                    <option value="">キリン</option>
             </select>
         </div>
 
