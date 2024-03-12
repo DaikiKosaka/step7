@@ -24,8 +24,6 @@
                 @foreach($companies as $company)
                     <option value="{{ $company->id }}">{{ $company->company_name }}</option>
                 @endforeach
-                <option value="">コカ・コーラ</option>
-                <option value="">キリン</option>
             </select>
         </div>
 
